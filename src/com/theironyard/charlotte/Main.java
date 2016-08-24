@@ -50,20 +50,21 @@ public class Main {
                 "/create-user",
                 ((request, response) -> {
                     String name = request.queryParams("loginName");
-                    String password = request.queryParams("password");
-                    User user = users.get(name);
-                    if (user != null) {
-                        response.redirect("/");
 
+                    String password = request.queryParams("password");
+
+                    User user = users.get(name);
+                   if ((user != null) && (!users.get(name).password.equals(password))) {
+                        Session session = request.session();
+                        session.invalidate();
+                        response.redirect("/");
                     }
+
                     if (user == null) {
                         user = new User(name, password);
                         users.put(name, user);
                     }
-                    // if users.get(name) is not null
-                    // compare passwords
-                    // if passwords are samsies pass go
-                    // if passwords are not the same do not pass go do not collect 200 dollars
+
                     Session session = request.session();
                     session.attribute("loginName", name);
 
@@ -76,13 +77,59 @@ public class Main {
                 "/create-message",
                 ((request, response) -> {
                     Session session = request.session();
+
                     String name = session.attribute("loginName");
+
                     User user = users.get(name);
                     if (user == null) {
                         throw new Exception("User is not logged in");
                     }
+
                     user.messageKeeper.add(request.queryParams("message"));
+
                     response.redirect("/");
+
+                    return "";
+                })
+        );
+
+        Spark.post(
+                "/delete",
+                ((request, response) -> {
+                    Session session = request.session();
+
+                    String name = session.attribute("loginName");
+
+                    int removeNumber = (Integer.valueOf(request.queryParams("messageDelete")) - 1);
+
+                    User user = users.get(name);
+
+                    user.messageKeeper.remove(removeNumber);
+
+                    response.redirect("/");
+
+                    return "";
+                })
+        );
+
+        Spark.post(
+                "/edit",
+                ((request, response) -> {
+
+                    Session session = request.session();
+
+                    String name = session.attribute("loginName");
+
+                    int editNumber = (Integer.valueOf(request.queryParams("messageEdit")) - 1);
+
+                    String editText = request.queryParams("edit");
+
+                    User user = users.get(name);
+
+                    user.messageKeeper.set(editNumber, editText);
+
+                    response.redirect("/");
+
                     return "";
                 })
         );
@@ -91,12 +138,13 @@ public class Main {
                 "/logout",
                 ((request, response) -> {
                     Session session = request.session();
+
                     session.invalidate();
+
                     response.redirect("/");
+
                     return "";
                 })
         );
-
-
     }
 }
