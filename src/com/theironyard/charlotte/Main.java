@@ -33,7 +33,6 @@ public class Main {
 
                     HashMap m = new HashMap<>();
 
-
                     if (user == null) {
                         return new ModelAndView(m, "index.html");
                     }
