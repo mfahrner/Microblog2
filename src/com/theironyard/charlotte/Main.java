@@ -54,9 +54,10 @@ public class Main {
 
                     User user = users.get(name);
                    if ((user != null) && (!users.get(name).password.equals(password))) {
-                        Session session = request.session();
-                        session.invalidate();
-                        response.redirect("/");
+                       Session session = request.session();
+                       session.invalidate();
+
+                       response.redirect("/");
                     }
 
                     if (user == null) {
@@ -106,7 +107,6 @@ public class Main {
                     user.messageKeeper.remove(removeNumber);
 
                     response.redirect("/");
-
                     return "";
                 })
         );
@@ -128,20 +128,31 @@ public class Main {
                     user.messageKeeper.set(editNumber, editText);
 
                     response.redirect("/");
-
                     return "";
                 })
         );
+//
+//        I added the delete button but just couldnt figure out how to make it clickable!!!!
+
+//        Spark.post(
+//                "/delete-button",
+//                ((request, response) -> {
+//                    Session session = request.session();
+//                    String name = session.attribute("loginName");
+//                    User user = users.get(name);
+//                    user.messageKeeper.remove(request.queryParams("button"));
+//                    response.redirect("/");
+//                    return "";
+//                })
+//        );
 
         Spark.post(
                 "/logout",
                 ((request, response) -> {
                     Session session = request.session();
-
                     session.invalidate();
 
                     response.redirect("/");
-
                     return "";
                 })
         );

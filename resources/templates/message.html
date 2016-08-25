@@ -28,7 +28,11 @@
 Messages by {{name}}
 <ol>
     {{#messageList}}
-    <li>{{.}}</li>
+    <li>
+        <form action="/delete-button" method="post">
+            <button type="submit">Delete</button>
+        </form>
+        {{.}}</li>
     {{/messageList}}
 </ol>
 </body>
